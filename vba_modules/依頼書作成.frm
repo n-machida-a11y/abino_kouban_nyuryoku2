@@ -341,17 +341,8 @@ Private Sub 依頼書作成_Click()
     ' (2-1) 「その他マスタ」に、新しい請求先情報があれば追加・更新する
     Call UpdateAddressMaster(wsMaster_Click)
     
-    ' ===== デバッグ開始 =====
-    MsgBox "DEBUG1: m_TargetRow=" & m_TargetRow & vbCrLf & _
-           "書込前N列=" & wsSrc.Cells(m_TargetRow, "N").Value & vbCrLf & _
-           "書込前S列=" & wsSrc.Cells(m_TargetRow, "S").Value
-
     ' (2-2) 「工事番号一覧」シートのN列以降を更新する
     Call UpdateExternalFile(wsSrc, m_TargetRow)
-
-    MsgBox "DEBUG2: 書込後N列=" & wsSrc.Cells(m_TargetRow, "N").Value & vbCrLf & _
-           "書込後S列=" & wsSrc.Cells(m_TargetRow, "S").Value
-    ' ===== デバッグ終了 =====
 
     ' (2-2) 「依頼履歴」シートに、今回の依頼内容を新しい行として追記する
     Call AddDataToIraiRireki(wsRireki)
@@ -414,33 +405,7 @@ Private Sub 依頼書作成_Click()
     End With
 
     ' --- ④ このツール内の工事一覧シートも最新の状態に更新 ---
-    ' ===== デバッグ3 =====
-    Dim dbgDestSheet As String
-    dbgDestSheet = Trim(CStr(wbTarget_Click.Sheets(SHEET_KANRI_MASTER).Range(CELL_LOCAL_COPY_SHEET).Value))
-    Dim dbgLastRow As Long
-    dbgLastRow = wsSrc.Cells(wsSrc.Rows.count, "A").End(xlUp).Row
-    MsgBox "DEBUG3: コピー元シート=" & wsSrc.Name & vbCrLf & _
-           "コピー先シート名(G5)=" & dbgDestSheet & vbCrLf & _
-           "外部データ最終行=" & dbgLastRow & vbCrLf & _
-           "外部65行N列=" & wsSrc.Cells(65, "N").Value
-
     Call UpdateLocalListSheet(wsSrc, wbTarget_Click.Sheets(SHEET_KANRI_MASTER))
-
-    ' ===== デバッグ4 =====
-    Dim dbgLocalWs As Worksheet
-    On Error Resume Next
-    Set dbgLocalWs = ThisWorkbook.Sheets(dbgDestSheet)
-    On Error GoTo ErrorHandlerClick
-    If Not dbgLocalWs Is Nothing Then
-        ' 外部行65 → ローカル行63 (65-5+3)
-        Dim dbgLocalRow As Long
-        dbgLocalRow = 65 - 5 + 3
-        MsgBox "DEBUG4: ローカル「" & dbgDestSheet & "」" & vbCrLf & _
-               "行" & dbgLocalRow & " N列=" & dbgLocalWs.Cells(dbgLocalRow, "N").Value & vbCrLf & _
-               "行" & dbgLocalRow & " S列=" & dbgLocalWs.Cells(dbgLocalRow, "S").Value
-    Else
-        MsgBox "DEBUG4: ローカルにシート「" & dbgDestSheet & "」が見つかりません"
-    End If
 
     ' --- ⑤ このツール内の「依頼履歴」シートも最新の状態に更新 ---
     On Error Resume Next
