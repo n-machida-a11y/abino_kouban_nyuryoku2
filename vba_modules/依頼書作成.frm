@@ -341,9 +341,18 @@ Private Sub 依頼書作成_Click()
     ' (2-1) 「その他マスタ」に、新しい請求先情報があれば追加・更新する
     Call UpdateAddressMaster(wsMaster_Click)
     
+    ' ===== デバッグ開始 =====
+    MsgBox "DEBUG1: m_TargetRow=" & m_TargetRow & vbCrLf & _
+           "書込前N列=" & wsSrc.Cells(m_TargetRow, "N").Value & vbCrLf & _
+           "書込前S列=" & wsSrc.Cells(m_TargetRow, "S").Value
+
     ' (2-2) 「工事番号一覧」シートのN列以降を更新する
     Call UpdateExternalFile(wsSrc, m_TargetRow)
-    
+
+    MsgBox "DEBUG2: 書込後N列=" & wsSrc.Cells(m_TargetRow, "N").Value & vbCrLf & _
+           "書込後S列=" & wsSrc.Cells(m_TargetRow, "S").Value
+    ' ===== デバッグ終了 =====
+
     ' (2-2) 「依頼履歴」シートに、今回の依頼内容を新しい行として追記する
     Call AddDataToIraiRireki(wsRireki)
     
